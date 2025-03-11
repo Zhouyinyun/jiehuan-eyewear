@@ -2,20 +2,39 @@
 let map = null;
 let markers = [];
 
+// 检查地图 API 是否加载成功
+function checkMapAPI() {
+    return new Promise((resolve, reject) => {
+        if (typeof AMap === 'undefined') {
+            reject(new Error('高德地图 API 未能加载，请检查网络连接'));
+        } else {
+            resolve();
+        }
+    });
+}
+
 // 初始化地图
 async function initMap(container) {
     try {
+        // 首先检查 API 是否加载
+        await checkMapAPI();
+        
         console.log('开始初始化地图...');
-        if (typeof AMap === 'undefined') {
-            throw new Error('高德地图API未加载');
-        }
         
         // 创建地图实例
         map = new AMap.Map(container, {
             zoom: 11,
             center: [120.153576, 30.287459], // 杭州市中心
             viewMode: '2D',
-            resizeEnable: true
+            resizeEnable: true,
+            touchZoom: true,
+            doubleClickZoom: true,
+            keyboardEnable: false,
+            dragEnable: true,
+            zoomEnable: true,
+            rotateEnable: false,
+            showBuildingBlock: true,
+            pitch: 0
         });
 
         // 等待地图加载完成
@@ -37,8 +56,16 @@ async function initMap(container) {
         return true;
     } catch (error) {
         console.error('地图初始化失败:', error);
-        document.getElementById(container).innerHTML = 
-            '<div class="error-message">地图初始化失败，请刷新页面重试</div>';
+        const mapContainer = document.getElementById(container);
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="error-message">
+                    <h3>地图加载失败</h3>
+                    <p>${error.message}</p>
+                    <button onclick="window.location.reload()">重新加载</button>
+                </div>
+            `;
+        }
         return false;
     }
 }

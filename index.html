@@ -288,6 +288,7 @@
             securityJsCode:'6a595920947bfdfad846405ed13adc32',
         }
     </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=814aae9f31924f08f0da71c9f4fccc3b"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=814aae9f31924f08f0da71c9f4fccc3b&plugin=AMap.Geocoder,AMap.Geolocation,AMap.Scale,AMap.ToolBar,AMap.AutoComplete,AMap.PlaceSearch,AMap.MarkerClusterer"></script>
 </head>
 <body>
@@ -315,6 +316,10 @@
         </div>
         <div id="map-container">
             <div id="map"></div>
+            <div id="loading" class="loading-overlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">地图加载中...</div>
+            </div>
         </div>
     </div>
 
