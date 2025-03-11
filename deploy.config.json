@@ -1,0 +1,16 @@
+{
+  "name": "jiehuan-eyewear",
+  "version": "1.0.0",
+  "description": "界环眼镜门店地图导航系统",
+  "deploy": {
+    "type": "static",
+    "region": "oss-cn-hangzhou",
+    "bucket": "jiehuan-eyewear",
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "data/**/*"
+    ]
+  }
+} 
