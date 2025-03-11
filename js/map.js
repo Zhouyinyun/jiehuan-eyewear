@@ -22,7 +22,7 @@ async function initMap(container) {
         console.log('开始初始化地图...');
         
         // 创建地图实例
-        map = new AMap.Map(container, {
+        map = new AMap.Map('map', {
             zoom: 11,
             center: [120.153576, 30.287459], // 杭州市中心
             viewMode: '2D',
@@ -53,10 +53,15 @@ async function initMap(container) {
             position: 'RB'
         }));
 
+        // 添加所有门店标记
+        if (window.storeData && window.storeData.stores) {
+            await addStoreMarkers(window.storeData.stores);
+        }
+
         return true;
     } catch (error) {
         console.error('地图初始化失败:', error);
-        const mapContainer = document.getElementById(container);
+        const mapContainer = document.getElementById('map');
         if (mapContainer) {
             mapContainer.innerHTML = `
                 <div class="error-message">

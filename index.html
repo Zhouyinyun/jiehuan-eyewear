@@ -543,33 +543,58 @@
 
         // 初始化页面
         window.onload = async function() {
-            // 添加样式到页面
-            document.head.appendChild(style);
-            
-            // 初始化城市选择器
-            initCitySelect();
-            
-            // 初始化地图
-            await window.mapUtils.initMap('map-container');
-            
-            // 初始化地址自动补全
-            initAutoComplete();
-            
-            // 初始化门店列表
-            updateStoreList('all');
-            
-            // 绑定城市选择事件
-            document.getElementById('city-select').addEventListener('change', (e) => {
-                const selectedCity = e.target.value;
-                updateStoreList(selectedCity);
+            try {
+                // 添加样式到页面
+                document.head.appendChild(style);
                 
-                // 更新地图上的标记
-                const filteredStores = selectedCity === 'all' 
-                    ? window.storeData.stores 
-                    : window.storeData.stores.filter(store => store.city === selectedCity);
+                // 初始化城市选择器
+                initCitySelect();
                 
-                window.mapUtils.addStoreMarkers(filteredStores);
-            });
+                // 初始化地图
+                const mapInitialized = await window.mapUtils.initMap('map');
+                
+                if (mapInitialized) {
+                    // 隐藏加载动画
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // 初始化地址自动补全
+                    initAutoComplete();
+                    
+                    // 初始化门店列表
+                    updateStoreList('all');
+                    
+                    // 绑定城市选择事件
+                    document.getElementById('city-select').addEventListener('change', (e) => {
+                        const selectedCity = e.target.value;
+                        updateStoreList(selectedCity);
+                        
+                        // 更新地图上的标记
+                        const filteredStores = selectedCity === 'all' 
+                            ? window.storeData.stores 
+                            : window.storeData.stores.filter(store => store.city === selectedCity);
+                        
+                        window.mapUtils.addStoreMarkers(filteredStores);
+                    });
+                } else {
+                    // 如果地图初始化失败，显示错误信息
+                    document.getElementById('loading').innerHTML = `
+                        <div class="error-message">
+                            <h3>地图加载失败</h3>
+                            <p>请检查网络连接后重试</p>
+                            <button onclick="window.location.reload()">重新加载</button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('页面初始化失败:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="error-message">
+                        <h3>页面加载失败</h3>
+                        <p>${error.message}</p>
+                        <button onclick="window.location.reload()">重新加载</button>
+                    </div>
+                `;
+            }
             
             // 绑定搜索按钮事件
             document.getElementById('search-button').addEventListener('click', searchAddress);
