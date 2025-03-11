@@ -562,28 +562,6 @@
                     
                     // 初始化门店列表
                     updateStoreList('all');
-                    
-                    // 绑定城市选择事件
-                    document.getElementById('city-select').addEventListener('change', (e) => {
-                        const selectedCity = e.target.value;
-                        updateStoreList(selectedCity);
-                        
-                        // 更新地图上的标记
-                        const filteredStores = selectedCity === 'all' 
-                            ? window.storeData.stores 
-                            : window.storeData.stores.filter(store => store.city === selectedCity);
-                        
-                        window.mapUtils.addStoreMarkers(filteredStores);
-                    });
-                } else {
-                    // 如果地图初始化失败，显示错误信息
-                    document.getElementById('loading').innerHTML = `
-                        <div class="error-message">
-                            <h3>地图加载失败</h3>
-                            <p>请检查网络连接后重试</p>
-                            <button onclick="window.location.reload()">重新加载</button>
-                        </div>
-                    `;
                 }
             } catch (error) {
                 console.error('页面初始化失败:', error);

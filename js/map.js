@@ -53,11 +53,6 @@ async function initMap(container) {
             position: 'RB'
         }));
 
-        // 添加所有门店标记
-        if (window.storeData && window.storeData.stores) {
-            await addStoreMarkers(window.storeData.stores);
-        }
-
         return true;
     } catch (error) {
         console.error('地图初始化失败:', error);
