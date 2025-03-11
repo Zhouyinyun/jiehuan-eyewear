@@ -343,8 +343,24 @@
     
     <div id="container">
         <div id="sidebar">
-            <div id="store-list" class="store-list"></div>
+            <div class="info-section">
+                <div class="section-title">门店入驻</div>
+                <p>如果您是传统眼镜店老板，想要加入界环智能眼镜的合作体系，欢迎联系我们。</p>
+                <p>联系电话：<span class="contact">13185030972</span></p>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">用户社群</div>
+                <p>如果您已经购买了界环眼镜，欢迎加入我们的用户社群，分享使用体验。</p>
+                <p>联系电话：<span class="contact">13185030972</span></p>
+            </div>
+            
+            <div class="store-list">
+                <div class="section-title">门店列表</div>
+                <div id="store-list"></div>
+            </div>
         </div>
+        
         <div id="map-container">
             <div id="map"></div>
             <div id="loading" class="loading-overlay">
@@ -562,6 +578,28 @@
                     
                     // 初始化门店列表
                     updateStoreList('all');
+                    
+                    // 绑定城市选择事件
+                    document.getElementById('city-select').addEventListener('change', (e) => {
+                        const selectedCity = e.target.value;
+                        updateStoreList(selectedCity);
+                        
+                        // 更新地图上的标记
+                        const filteredStores = selectedCity === 'all' 
+                            ? window.storeData.stores 
+                            : window.storeData.stores.filter(store => store.city === selectedCity);
+                        
+                        window.mapUtils.addStoreMarkers(filteredStores);
+                    });
+                } else {
+                    // 如果地图初始化失败，显示错误信息
+                    document.getElementById('loading').innerHTML = `
+                        <div class="error-message">
+                            <h3>地图加载失败</h3>
+                            <p>请检查网络连接后重试</p>
+                            <button onclick="window.location.reload()">重新加载</button>
+                        </div>
+                    `;
                 }
             } catch (error) {
                 console.error('页面初始化失败:', error);

@@ -1,6 +1,7 @@
 // 地图实例
 let map = null;
 let markers = [];
+let currentInfoWindow = null;
 
 // 检查地图 API 是否加载成功
 function checkMapAPI() {
@@ -14,7 +15,7 @@ function checkMapAPI() {
 }
 
 // 初始化地图
-async function initMap(container) {
+async function initMap() {
     try {
         // 首先检查 API 是否加载
         await checkMapAPI();
@@ -52,6 +53,11 @@ async function initMap(container) {
         map.addControl(new AMap.ToolBar({
             position: 'RB'
         }));
+
+        // 添加所有门店标记
+        if (window.storeData && window.storeData.stores) {
+            await addStoreMarkers(window.storeData.stores);
+        }
 
         return true;
     } catch (error) {
@@ -370,12 +376,12 @@ function showStoreInfo(store) {
 
 // 导出函数
 window.mapUtils = {
+    map: () => map,
     initMap,
     showCityStores,
     clearMarkers,
     focusStore,
     showStoreInfo,
     addStoreMarkers,
-    map: () => map,
-    currentInfoWindow: null
+    currentInfoWindow
 }; 
