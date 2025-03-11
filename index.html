@@ -281,37 +281,6 @@
             border-left: 4px solid #000;
             transform: translateX(5px);
         }
-        
-        .store-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .nav-button, .copy-button {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 14px;
-        }
-        
-        .copy-button {
-            background: #666;
-        }
-        
-        .copy-button:hover {
-            background: #888;
-        }
-        
-        .copy-button.copied {
-            background: #4CAF50;
-        }
     </style>
     <!-- 引入高德地图API -->
     <script type="text/javascript">
@@ -319,7 +288,6 @@
             securityJsCode:'6a595920947bfdfad846405ed13adc32',
         }
     </script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=814aae9f31924f08f0da71c9f4fccc3b"></script>
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=814aae9f31924f08f0da71c9f4fccc3b&plugin=AMap.Geocoder,AMap.Geolocation,AMap.Scale,AMap.ToolBar,AMap.AutoComplete,AMap.PlaceSearch,AMap.MarkerClusterer"></script>
 </head>
 <body>
@@ -343,30 +311,24 @@
     
     <div id="container">
         <div id="sidebar">
-            <div class="info-section">
-                <div class="section-title">门店入驻</div>
-                <p>如果您是传统眼镜店老板，想要加入界环智能眼镜的合作体系，欢迎联系我们。</p>
-                <p>联系电话：<span class="contact">13185030972</span></p>
-            </div>
+            <div id="store-list" class="store-list"></div>
             
-            <div class="info-section">
-                <div class="section-title">用户社群</div>
-                <p>如果您已经购买了界环眼镜，欢迎加入我们的用户社群，分享使用体验。</p>
-                <p>联系电话：<span class="contact">13185030972</span></p>
-            </div>
-            
-            <div class="store-list">
-                <div class="section-title">门店列表</div>
-                <div id="store-list"></div>
+            <!-- 添加社群入口 -->
+            <div class="community-section">
+                <div class="community-card">
+                    <h3>加入界环眼镜社群</h3>
+                    <p>已购用户专属社群 + 门店入驻咨询</p>
+                    <div class="contact-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                        </svg>
+                        <span>微信：13185030972</span>
+                    </div>
+                </div>
             </div>
         </div>
-        
         <div id="map-container">
             <div id="map"></div>
-            <div id="loading" class="loading-overlay">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">地图加载中...</div>
-            </div>
         </div>
     </div>
 
@@ -431,15 +393,15 @@
                     <div class="store-name">${store.name}</div>
                     <div class="store-address">${store.address}</div>
                     <div class="store-actions">
-                        <button class="copy-button" onclick="event.stopPropagation(); copyAddress('${store.address}', this)">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <button class="copy-button" onclick="event.stopPropagation(); window.mapUtils.copyAddressToSearch('${store.address}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                             </svg>
                             复制地址
                         </button>
                         <button class="nav-button" onclick="event.stopPropagation(); window.open('https://uri.amap.com/navigation?to=${store.longitude},${store.latitude},${store.name}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 2L2 12h4v8h4v-6h4v6h4v-8h4L12 2z"/>
                             </svg>
                             导航
@@ -559,58 +521,33 @@
 
         // 初始化页面
         window.onload = async function() {
-            try {
-                // 添加样式到页面
-                document.head.appendChild(style);
+            // 添加样式到页面
+            document.head.appendChild(style);
+            
+            // 初始化城市选择器
+            initCitySelect();
+            
+            // 初始化地图
+            await window.mapUtils.initMap('map-container');
+            
+            // 初始化地址自动补全
+            initAutoComplete();
+            
+            // 初始化门店列表
+            updateStoreList('all');
+            
+            // 绑定城市选择事件
+            document.getElementById('city-select').addEventListener('change', (e) => {
+                const selectedCity = e.target.value;
+                updateStoreList(selectedCity);
                 
-                // 初始化城市选择器
-                initCitySelect();
+                // 更新地图上的标记
+                const filteredStores = selectedCity === 'all' 
+                    ? window.storeData.stores 
+                    : window.storeData.stores.filter(store => store.city === selectedCity);
                 
-                // 初始化地图
-                const mapInitialized = await window.mapUtils.initMap('map');
-                
-                if (mapInitialized) {
-                    // 隐藏加载动画
-                    document.getElementById('loading').style.display = 'none';
-                    
-                    // 初始化地址自动补全
-                    initAutoComplete();
-                    
-                    // 初始化门店列表
-                    updateStoreList('all');
-                    
-                    // 绑定城市选择事件
-                    document.getElementById('city-select').addEventListener('change', (e) => {
-                        const selectedCity = e.target.value;
-                        updateStoreList(selectedCity);
-                        
-                        // 更新地图上的标记
-                        const filteredStores = selectedCity === 'all' 
-                            ? window.storeData.stores 
-                            : window.storeData.stores.filter(store => store.city === selectedCity);
-                        
-                        window.mapUtils.addStoreMarkers(filteredStores);
-                    });
-                } else {
-                    // 如果地图初始化失败，显示错误信息
-                    document.getElementById('loading').innerHTML = `
-                        <div class="error-message">
-                            <h3>地图加载失败</h3>
-                            <p>请检查网络连接后重试</p>
-                            <button onclick="window.location.reload()">重新加载</button>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('页面初始化失败:', error);
-                document.getElementById('loading').innerHTML = `
-                    <div class="error-message">
-                        <h3>页面加载失败</h3>
-                        <p>${error.message}</p>
-                        <button onclick="window.location.reload()">重新加载</button>
-                    </div>
-                `;
-            }
+                window.mapUtils.addStoreMarkers(filteredStores);
+            });
             
             // 绑定搜索按钮事件
             document.getElementById('search-button').addEventListener('click', searchAddress);
@@ -630,7 +567,7 @@
                 margin-top: 10px;
             }
             
-            .nav-button, .copy-button {
+            .nav-button {
                 background: #000;
                 color: white;
                 border: none;
@@ -643,16 +580,8 @@
                 font-size: 14px;
             }
             
-            .copy-button {
-                background: #666;
-            }
-            
-            .copy-button:hover {
-                background: #888;
-            }
-            
-            .copy-button.copied {
-                background: #4CAF50;
+            .nav-button:hover {
+                background: #333;
             }
             
             .store-item {
@@ -722,38 +651,6 @@
                 transform: translateX(5px);
             }
         `;
-
-        // 添加复制地址功能
-        function copyAddress(address, button) {
-            // 将地址复制到剪贴板
-            navigator.clipboard.writeText(address).then(() => {
-                // 更新按钮状态
-                button.classList.add('copied');
-                button.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 6L9 17l-5-5"/>
-                    </svg>
-                    已复制
-                `;
-                
-                // 自动填充搜索框
-                document.getElementById('search-input').value = address;
-                
-                // 3秒后恢复按钮状态
-                setTimeout(() => {
-                    button.classList.remove('copied');
-                    button.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        复制地址
-                    `;
-                }, 3000);
-            }).catch(() => {
-                alert('复制失败，请手动复制地址');
-            });
-        }
     </script>
 </body>
 </html> 

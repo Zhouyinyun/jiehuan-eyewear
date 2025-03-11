@@ -1,41 +1,21 @@
 // 地图实例
 let map = null;
 let markers = [];
-let currentInfoWindow = null;
-
-// 检查地图 API 是否加载成功
-function checkMapAPI() {
-    return new Promise((resolve, reject) => {
-        if (typeof AMap === 'undefined') {
-            reject(new Error('高德地图 API 未能加载，请检查网络连接'));
-        } else {
-            resolve();
-        }
-    });
-}
 
 // 初始化地图
-async function initMap() {
+async function initMap(container) {
     try {
-        // 首先检查 API 是否加载
-        await checkMapAPI();
-        
         console.log('开始初始化地图...');
+        if (typeof AMap === 'undefined') {
+            throw new Error('高德地图API未加载');
+        }
         
         // 创建地图实例
-        map = new AMap.Map('map', {
+        map = new AMap.Map(container, {
             zoom: 11,
             center: [120.153576, 30.287459], // 杭州市中心
             viewMode: '2D',
-            resizeEnable: true,
-            touchZoom: true,
-            doubleClickZoom: true,
-            keyboardEnable: false,
-            dragEnable: true,
-            zoomEnable: true,
-            rotateEnable: false,
-            showBuildingBlock: true,
-            pitch: 0
+            resizeEnable: true
         });
 
         // 等待地图加载完成
@@ -54,24 +34,11 @@ async function initMap() {
             position: 'RB'
         }));
 
-        // 添加所有门店标记
-        if (window.storeData && window.storeData.stores) {
-            await addStoreMarkers(window.storeData.stores);
-        }
-
         return true;
     } catch (error) {
         console.error('地图初始化失败:', error);
-        const mapContainer = document.getElementById('map');
-        if (mapContainer) {
-            mapContainer.innerHTML = `
-                <div class="error-message">
-                    <h3>地图加载失败</h3>
-                    <p>${error.message}</p>
-                    <button onclick="window.location.reload()">重新加载</button>
-                </div>
-            `;
-        }
+        document.getElementById(container).innerHTML = 
+            '<div class="error-message">地图初始化失败，请刷新页面重试</div>';
         return false;
     }
 }
@@ -115,8 +82,15 @@ function updateStoreList(stores) {
             <div class="store-name">${brandName}</div>
             <div class="store-address">${store.address}</div>
             <div class="store-actions">
+                <button class="copy-button" onclick="event.stopPropagation(); window.mapUtils.copyAddressToSearch('${store.address}')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    复制地址
+                </button>
                 <button class="nav-button" onclick="event.stopPropagation(); window.open('https://uri.amap.com/navigation?to=${store.longitude},${store.latitude},${store.name}&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2L2 12h4v8h4v-6h4v6h4v-8h4L12 2z"/>
                     </svg>
                     导航
@@ -374,14 +348,43 @@ function showStoreInfo(store) {
     window.mapUtils.currentInfoWindow = infoWindow;
 }
 
+// 复制地址到搜索框
+function copyAddressToSearch(address) {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.value = address;
+        // 显示复制成功提示
+        showCopyTooltip();
+        // 自动触发搜索
+        searchInput.dispatchEvent(new Event('input'));
+        // 触发搜索按钮点击
+        document.getElementById('search-button').click();
+    }
+}
+
+// 显示复制成功提示
+function showCopyTooltip() {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'copy-tooltip';
+    tooltip.textContent = '地址已复制到搜索框';
+    document.body.appendChild(tooltip);
+    
+    // 2秒后移除提示
+    setTimeout(() => {
+        document.body.removeChild(tooltip);
+    }, 2000);
+}
+
 // 导出函数
 window.mapUtils = {
-    map: () => map,
     initMap,
     showCityStores,
     clearMarkers,
     focusStore,
     showStoreInfo,
     addStoreMarkers,
-    currentInfoWindow
+    map: () => map,
+    currentInfoWindow: null,
+    copyAddressToSearch,
+    showCopyTooltip
 }; 

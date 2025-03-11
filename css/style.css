@@ -154,4 +154,98 @@ footer {
     .store-list {
         max-height: 400px;
     }
+}
+
+/* 社群入口样式 */
+.community-section {
+    padding: 15px;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.community-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.community-card h3 {
+    color: #333;
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.community-card p {
+    color: #666;
+    margin: 0 0 15px 0;
+    font-size: 14px;
+}
+
+.contact-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.contact-info svg {
+    color: #4CAF50;
+}
+
+/* 复制地址按钮样式 */
+.store-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.copy-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.copy-button:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.copy-button svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* 复制成功提示 */
+.copy-tooltip {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+    animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    20% { opacity: 1; transform: translate(-50%, 0); }
+    80% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
 } 
